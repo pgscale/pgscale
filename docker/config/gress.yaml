@@ -1,0 +1,31 @@
+gress:
+  bindAddr: 0.0.0.0
+  bindPort: 6957
+
+logging:
+  verbosity: 6
+  level: DEBUG
+  output: stderr
+  perm: 0644
+
+postgresql:
+  network: tcp
+  bindAddr: postgresql_master
+  bindPort: 5432
+  dialTimeout: 10s
+
+rules:
+  -
+    name: log-all-selects
+    action: LOG
+    regex: (?i)^select
+
+  -
+    name: cache-all-selects-profile
+    action: CACHE
+    regex: ^select\s+.*profile
+
+  -
+    name: cache-all-selects-users
+    action: CACHE
+    regex: ^select\s+.*users

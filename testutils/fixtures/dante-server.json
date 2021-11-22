@@ -1,0 +1,115 @@
+{
+  "BindAddr": "127.0.0.1",
+  "BindPort": "6957",
+  "Auth": {
+    "Users": {
+      "admin": {
+        "auth_type": "md5",
+        "hash": "558e292c17f2b28142ab3a85d92952fd"
+      },
+      "dbuser": {
+        "auth_type": "password",
+        "password": "1234"
+      }
+    }
+  },
+  "Logging": {
+    "Perm": 644,
+    "Verbosity": 6,
+    "Level": "DEBUG",
+    "Output": "stderr"
+  },
+  "PostgreSQL": {
+    "Databases": [{
+      "Dbname": "postgres",
+      "Parameters": {
+        "host": "localhost",
+        "port": "5432",
+        "user": "postgres"
+      },
+      "ConnectionPool": {
+        "Policy": "session",
+        "MaxConnIdleTime": "15m",
+        "MaxConnLifetime": "1h",
+        "HealthCheckPeriod": "1m",
+        "MinConns": 0,
+        "MaxConns": 50
+      },
+      "LogStatements": true,
+      "ResetQuery": "DISCARD ALL",
+      "Caches": null
+    }, {
+      "Dbname": "privacyactive",
+      "Parameters": {
+        "host": "localhost",
+        "port": "5432",
+        "user": "postgres"
+      },
+      "ConnectionPool": {
+        "Policy": "statement",
+        "MaxConnIdleTime": "15m",
+        "MaxConnLifetime": "1h",
+        "HealthCheckPeriod": "1m",
+        "MinConns": 0,
+        "MaxConns": 50
+      },
+      "LogStatements": true,
+      "ResetQuery": "DISCARD ALL",
+      "Caches": [{
+        "Schema": "public",
+        "NumEvictionWorkers": null,
+        "MaxIdleDuration": null,
+        "TTLDuration": null,
+        "MaxKeys": null,
+        "MaxInuse": null,
+        "LRUSamples": null,
+        "EvictionPolicy": null,
+        "StorageEngine": null,
+        "CheckEmptyFragmentsInterval": null,
+        "Tables": [{
+          "DMapName": "",
+          "Name": "profile",
+          "MaxIdleDuration": "60m",
+          "TTLDuration": "10m",
+          "MaxKeys": 500000,
+          "MaxInuse": null,
+          "LRUSamples": 20,
+          "EvictionPolicy": "NONE",
+          "StorageEngine": "kvstore"
+        }, {
+          "DMapName": "",
+          "Name": "users",
+          "MaxIdleDuration": "60m",
+          "TTLDuration": "10m",
+          "MaxKeys": 500000,
+          "MaxInuse": null,
+          "LRUSamples": 20,
+          "EvictionPolicy": "NONE",
+          "StorageEngine": "kvstore"
+        }]
+      }, {
+        "Schema": "different-schema",
+        "NumEvictionWorkers": null,
+        "MaxIdleDuration": null,
+        "TTLDuration": null,
+        "MaxKeys": null,
+        "MaxInuse": null,
+        "LRUSamples": null,
+        "EvictionPolicy": null,
+        "StorageEngine": null,
+        "CheckEmptyFragmentsInterval": null,
+        "Tables": [{
+          "DMapName": "",
+          "Name": "users",
+          "MaxIdleDuration": "60s",
+          "TTLDuration": "10s",
+          "MaxKeys": 500000,
+          "MaxInuse": null,
+          "LRUSamples": 20,
+          "EvictionPolicy": "NONE",
+          "StorageEngine": "kvstore"
+        }]
+      }]
+    }]
+  }
+}

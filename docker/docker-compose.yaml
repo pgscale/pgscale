@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  postgresql:
+    image: postgres:latest
+    restart: on-failure
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - 'postgresql_data:/postgresql'
+      #- './postgresql.conf:/var/lib/postgresql/data/postgresql.conf'
+      #- './pg_hba.conf:/var/lib/postgresql/data/pg_hba.conf'
+
+volumes:
+  postgresql_data:
+    driver: local
