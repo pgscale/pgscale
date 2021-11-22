@@ -31,7 +31,7 @@ func TestConfig_Dante_ConnString(t *testing.T) {
 		0: "dbname=postgres user=postgres host=localhost port=5432 " +
 			"pool_max_conn_idle_time=15m pool_max_conn_lifetime=1h " +
 			"pool_health_check_period=1m pool_max_conns=50 pool_min_conns=0 ",
-		1: "dbname=privacyactive port=5432 user=postgres host=localhost " +
+		1: "dbname=somedatabase port=5432 user=postgres host=localhost " +
 			"pool_max_conn_idle_time=15m pool_max_conn_lifetime=1h " +
 			"pool_health_check_period=1m pool_max_conns=50 pool_min_conns=0 ",
 	}

@@ -43,7 +43,7 @@ dante {
       }
     }
 
-    database "privacyactive" {
+    database "somedatabase" {
       parameters = {
         user = "postgres"
         host = "localhost"
