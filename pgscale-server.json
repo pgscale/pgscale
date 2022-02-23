@@ -1,0 +1,85 @@
+{
+  "pgscale": {
+    "bindAddr": "127.0.0.1",
+    "bindPort": 6957,
+    "auth": {
+      "users": [
+        {
+          "admin": {
+            "authType": "md5",
+            "hash": "558e292c17f2b28142ab3a85d92952fd"
+          }
+        },
+        {
+          "dbuser": {
+            "authType": "password",
+            "password": 1234
+          }
+        }
+      ]
+    },
+    "logging": {
+      "verbosity": 6,
+      "level": "DEBUG",
+      "output": "stderr",
+      "perm": 644
+    },
+    "postgresql": {
+      "databases": {
+        "database-name": {
+          "logStatements": true,
+          "resetQuery": "DISCARD ALL",
+          "parameters": {
+            "user": "postgres",
+            "host": "localhost",
+            "port": 5432
+          },
+          "connectionPool": {
+            "policy": "statement",
+            "maxConns": 50,
+            "minConns": 0,
+            "maxConnLifetime": "1h",
+            "maxConnIdleTime": "15m",
+            "healthCheckPeriod": "1m"
+          },
+          "cache": {
+            "schemas": {
+              "public": {
+                "tables": {
+                  "profile": {
+                    "maxIdleDuration": "60m",
+                    "ttlDuration": "10m",
+                    "maxKeys": 500000,
+                    "lruSamples": 20,
+                    "evictionPolicy": "NONE",
+                    "storageEngine": "kvstore"
+                  },
+                  "users": {
+                    "maxIdleDuration": "60m",
+                    "ttlDuration": "10m",
+                    "maxKeys": 500000,
+                    "lruSamples": 20,
+                    "evictionPolicy": "NONE",
+                    "storageEngine": "kvstore"
+                  }
+                }
+              },
+              "another-schema": {
+                "tables": {
+                  "users": {
+                    "maxIdleDuration": "60m",
+                    "ttlDuration": "10m",
+                    "maxKeys": 500000,
+                    "lruSamples": 20,
+                    "evictionPolicy": "NONE",
+                    "storageEngine": "kvstore"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
