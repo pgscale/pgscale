@@ -1,4 +1,3 @@
-OUT=$(PWD)/bin
 VERSION=0.1.0
 ROOT_MODULE=github.com/buraksezer/pgscale-server
 DESTDIR=$(shell go env GOPATH)/bin
@@ -6,15 +5,12 @@ DESTDIR=$(shell go env GOPATH)/bin
 GIT_SHA=`git rev-parse --short HEAD || echo "GitNotFound"`
 
 build:
-	go build -o ${OUT}/pgscale-server -ldflags="-s -w -X main.Version=${VERSION} -X main.GitSHA=${GIT_SHA}" ./cmd/pgscale-server
+	go build -o ${DESTDIR}/pgscale-server -ldflags="-s -w -X main.Version=${VERSION} -X main.GitSHA=${GIT_SHA}" ./cmd/pgscale-server
 
 test:
 	go test -v ./...
 
-install:
-	install ${OUT}/pgscale-server ${DESTDIR}
-
 clean:
-	rm -rf ${OUT}/pgscale-server
+	if [ -d ${DESTDIR}/pgscale-server ]; then rm -rf ${DESTDIR}/pgscale-server; fi
 
-all: clean build install
+all: clean build
