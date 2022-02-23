@@ -18,10 +18,10 @@ import (
 	"errors"
 
 	"github.com/buraksezer/olric"
-	"github.com/buraksezer/pgscale/config"
-	"github.com/buraksezer/pgscale/postgresql/matcher"
-	"github.com/buraksezer/pgscale/postgresql/protocol"
-	"github.com/buraksezer/pgscale/utils"
+	"github.com/pgscale/pgscale/config"
+	"github.com/pgscale/pgscale/postgresql/matcher"
+	"github.com/pgscale/pgscale/postgresql/protocol"
+	"github.com/pgscale/pgscale/utils"
 )
 
 func (p *Proxy) cacheExtendedQuery(table *config.Table, c *protocol.Reader, data *protocol.DataPacket) (bool, error) {

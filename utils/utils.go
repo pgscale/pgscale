@@ -21,8 +21,8 @@ import (
 
 	"github.com/buraksezer/olric"
 	"github.com/buraksezer/olric/pkg/flog"
-	"github.com/buraksezer/pgscale/dmaps"
-	"github.com/buraksezer/pgscale/kontext"
+	"github.com/pgscale/pgscale/dmaps"
+	"github.com/pgscale/pgscale/kontext"
 )
 
 const NULByte = byte(0)

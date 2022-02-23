@@ -1,4 +1,4 @@
-module github.com/buraksezer/pgscale
+module github.com/pgscale/pgscale
 
 go 1.17
 

@@ -17,8 +17,8 @@ package protocol
 import (
 	"testing"
 
-	"github.com/buraksezer/pgscale/testutils"
 	"github.com/jackc/pgproto3/v2"
+	"github.com/pgscale/pgscale/testutils"
 	"github.com/stretchr/testify/require"
 )
 

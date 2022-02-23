@@ -24,7 +24,7 @@ import (
 	"runtime"
 
 	"github.com/buraksezer/olric"
-	"github.com/buraksezer/pgscale/cmd/pgscale-server/server"
+	"github.com/pgscale/pgscale/cmd/pgscale-server/server"
 	"github.com/sean-/seed"
 )
 
@@ -39,7 +39,7 @@ Options:
   -c, --config     Set configuration file path.
 
 The Go runtime version %s
-Report bugs to https://github.com/buraksezer/pgscale/issues
+Report bugs to https://github.com/pgscale/pgscale/issues
 `
 	_, err := fmt.Fprintf(os.Stdout, msg, runtime.Version())
 	if err != nil {

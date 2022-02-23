@@ -20,9 +20,9 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/buraksezer/pgscale/config"
-	"github.com/buraksezer/pgscale/kontext"
 	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/pgscale/pgscale/config"
+	"github.com/pgscale/pgscale/kontext"
 )
 
 var ErrDatabaseConnNotFound = errors.New("conn not found")

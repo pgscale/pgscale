@@ -21,9 +21,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/buraksezer/pgscale/config"
-	"github.com/buraksezer/pgscale/kontext"
-	"github.com/buraksezer/pgscale/testutils"
+	"github.com/pgscale/pgscale/config"
+	"github.com/pgscale/pgscale/kontext"
+	"github.com/pgscale/pgscale/testutils"
 	"github.com/stretchr/testify/require"
 )
 

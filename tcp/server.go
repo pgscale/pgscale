@@ -20,9 +20,9 @@ import (
 	"sync"
 
 	"github.com/buraksezer/olric/pkg/flog"
-	"github.com/buraksezer/pgscale/config"
-	"github.com/buraksezer/pgscale/kontext"
-	"github.com/buraksezer/pgscale/utils"
+	"github.com/pgscale/pgscale/config"
+	"github.com/pgscale/pgscale/kontext"
+	"github.com/pgscale/pgscale/utils"
 )
 
 type Handler func(conn net.Conn) error

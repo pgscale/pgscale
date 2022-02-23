@@ -15,9 +15,9 @@
 package matcher
 
 import (
-	"github.com/buraksezer/pgscale/config"
-	"github.com/buraksezer/pgscale/utils"
 	pg_query "github.com/pganalyze/pg_query_go/v2"
+	"github.com/pgscale/pgscale/config"
+	"github.com/pgscale/pgscale/utils"
 	"github.com/valyala/fastjson"
 )
 

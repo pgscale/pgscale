@@ -21,16 +21,16 @@ import (
 	"strings"
 
 	"github.com/buraksezer/olric/pkg/flog"
-	"github.com/buraksezer/pgscale/config"
-	"github.com/buraksezer/pgscale/dmaps"
-	"github.com/buraksezer/pgscale/kontext"
-	"github.com/buraksezer/pgscale/postgresql/auth"
-	"github.com/buraksezer/pgscale/postgresql/dbconn"
-	"github.com/buraksezer/pgscale/tcp"
-	"github.com/buraksezer/pgscale/utils"
 	"github.com/jackc/pgproto3/v2"
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/pgscale/pgscale/config"
+	"github.com/pgscale/pgscale/dmaps"
+	"github.com/pgscale/pgscale/kontext"
+	"github.com/pgscale/pgscale/postgresql/auth"
+	"github.com/pgscale/pgscale/postgresql/dbconn"
+	"github.com/pgscale/pgscale/tcp"
+	"github.com/pgscale/pgscale/utils"
 )
 
 type PostgreSQL struct {

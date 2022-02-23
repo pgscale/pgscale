@@ -19,9 +19,9 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/buraksezer/pgscale/config"
-	"github.com/buraksezer/pgscale/kontext"
 	"github.com/jackc/pgproto3/v2"
+	"github.com/pgscale/pgscale/config"
+	"github.com/pgscale/pgscale/kontext"
 )
 
 // https://www.postgresql.org/docs/current/protocol-flow.html

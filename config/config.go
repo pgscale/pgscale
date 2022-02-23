@@ -19,8 +19,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/buraksezer/pgscale/kontext"
 	"github.com/hashicorp/hcl/v2/hclsimple"
+	"github.com/pgscale/pgscale/kontext"
 )
 
 var ErrConfigNotFound = errors.New("no config key found")

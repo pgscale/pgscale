@@ -23,9 +23,9 @@ import (
 
 	"github.com/buraksezer/olric"
 	olricConfig "github.com/buraksezer/olric/config"
-	"github.com/buraksezer/pgscale/config"
-	"github.com/buraksezer/pgscale/kontext"
-	"github.com/buraksezer/pgscale/pgscale"
+	"github.com/pgscale/pgscale/config"
+	"github.com/pgscale/pgscale/kontext"
+	"github.com/pgscale/pgscale/pgscale"
 	"golang.org/x/sync/errgroup"
 )
 
