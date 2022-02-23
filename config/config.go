@@ -19,7 +19,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/buraksezer/dante/kontext"
+	"github.com/buraksezer/pgscale/kontext"
 	"github.com/hashicorp/hcl/v2/hclsimple"
 )
 
@@ -37,8 +37,8 @@ const (
 )
 
 type Config struct {
-	Dante Dante `hcl:"dante,block"`
-	Olric Olric `hcl:"olric,block"`
+	PgScale PgScale `hcl:"pgscale,block"`
+	Olric   Olric   `hcl:"olric,block"`
 }
 
 func FromKontext(k *kontext.Kontext) (*Config, error) {

@@ -19,10 +19,10 @@ import (
 	"net"
 	"sync"
 
-	"github.com/buraksezer/dante/config"
-	"github.com/buraksezer/dante/kontext"
-	"github.com/buraksezer/dante/utils"
 	"github.com/buraksezer/olric/pkg/flog"
+	"github.com/buraksezer/pgscale/config"
+	"github.com/buraksezer/pgscale/kontext"
+	"github.com/buraksezer/pgscale/utils"
 )
 
 type Handler func(conn net.Conn) error
@@ -54,7 +54,7 @@ func New(k *kontext.Kontext, started func(), handler Handler) (*Server, error) {
 	return &Server{
 		config:  c,
 		log:     lg,
-		addr:    net.JoinHostPort(c.Dante.BindAddr, c.Dante.BindPort),
+		addr:    net.JoinHostPort(c.PgScale.BindAddr, c.PgScale.BindPort),
 		handler: handler,
 		started: started,
 		ctx:     ctx,

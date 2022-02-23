@@ -20,8 +20,8 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/buraksezer/dante/config"
-	"github.com/buraksezer/dante/kontext"
+	"github.com/buraksezer/pgscale/config"
+	"github.com/buraksezer/pgscale/kontext"
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 

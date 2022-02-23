@@ -17,7 +17,7 @@ package dmaps
 import (
 	"testing"
 
-	"github.com/buraksezer/dante/testutils"
+	"github.com/buraksezer/pgscale/testutils"
 	"github.com/stretchr/testify/require"
 )
 

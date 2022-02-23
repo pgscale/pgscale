@@ -23,7 +23,7 @@ import (
 
 var errDMapNotFound = errors.New("dmap not found")
 
-// DMaps stores all available DMap instances of this Dante node.
+// DMaps stores all available DMap instances of this PgScale node.
 type DMaps struct {
 	mtx sync.RWMutex
 

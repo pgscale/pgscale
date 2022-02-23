@@ -17,11 +17,11 @@ package postgresql
 import (
 	"errors"
 
-	"github.com/buraksezer/dante/config"
-	"github.com/buraksezer/dante/postgresql/matcher"
-	"github.com/buraksezer/dante/postgresql/protocol"
-	"github.com/buraksezer/dante/utils"
 	"github.com/buraksezer/olric"
+	"github.com/buraksezer/pgscale/config"
+	"github.com/buraksezer/pgscale/postgresql/matcher"
+	"github.com/buraksezer/pgscale/postgresql/protocol"
+	"github.com/buraksezer/pgscale/utils"
 )
 
 func (p *Proxy) cacheSimpleQuery(table *config.Table, data *protocol.DataPacket) (bool, error) {

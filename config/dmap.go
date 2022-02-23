@@ -26,7 +26,7 @@ func prepareDMapConfig(c *Config) (*olricConfig.DMaps, error) {
 		Custom: make(map[string]olricConfig.DMap),
 	}
 
-	for _, db := range c.Dante.PostgreSQL.Databases {
+	for _, db := range c.PgScale.PostgreSQL.Databases {
 		for _, cache := range db.Caches {
 			df := olricConfig.DMaps{}
 			if cache.NumEvictionWorkers != nil {

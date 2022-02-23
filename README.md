@@ -1,4 +1,4 @@
-# Dante
+# PgScale
 
 Distributed query cache and connection pool middleware for PostgreSQL. Backed by [Olric](https://github.com/buraksezer/olric).
 

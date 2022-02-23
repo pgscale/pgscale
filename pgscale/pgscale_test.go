@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package dante
+package pgscale
 
 import "testing"
 
-func TestDante_ListenAndServe(t *testing.T) {
+func TestPgScale_ListenAndServe(t *testing.T) {
 
 }

@@ -21,9 +21,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/buraksezer/dante/config"
-	"github.com/buraksezer/dante/kontext"
-	"github.com/buraksezer/dante/testutils"
+	"github.com/buraksezer/pgscale/config"
+	"github.com/buraksezer/pgscale/kontext"
+	"github.com/buraksezer/pgscale/testutils"
 	"github.com/stretchr/testify/require"
 )
 
@@ -31,12 +31,12 @@ func TestTCP_Server(t *testing.T) {
 	port, err := testutils.GetFreePort()
 	require.NoError(t, err)
 
-	cfg := testutils.NewDanteConfig(t)
+	cfg := testutils.NewPgScaleConfig(t)
 	c, err := config.New(cfg)
 	require.NoError(t, err)
 
-	c.Dante.BindAddr = "127.0.0.1"
-	c.Dante.BindPort = strconv.Itoa(port)
+	c.PgScale.BindAddr = "127.0.0.1"
+	c.PgScale.BindPort = strconv.Itoa(port)
 
 	ctx, cancel := context.WithCancel(context.Background())
 	started := func() {

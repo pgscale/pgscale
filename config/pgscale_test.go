@@ -18,12 +18,12 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/buraksezer/dante/testutils"
+	"github.com/buraksezer/pgscale/testutils"
 	"github.com/stretchr/testify/require"
 )
 
-func TestConfig_Dante_ConnString(t *testing.T) {
-	cfg := testutils.NewDanteConfig(t)
+func TestConfig_PgScale_ConnString(t *testing.T) {
+	cfg := testutils.NewPgScaleConfig(t)
 	c, err := New(cfg)
 	require.NoError(t, err)
 
@@ -35,7 +35,7 @@ func TestConfig_Dante_ConnString(t *testing.T) {
 			"pool_max_conn_idle_time=15m pool_max_conn_lifetime=1h " +
 			"pool_health_check_period=1m pool_max_conns=50 pool_min_conns=0 ",
 	}
-	for i, db := range c.Dante.PostgreSQL.Databases {
+	for i, db := range c.PgScale.PostgreSQL.Databases {
 		require.Equal(t,
 			testutils.ConnStringToMap(expected[i]),
 			testutils.ConnStringToMap(db.ConnString()),
@@ -43,16 +43,16 @@ func TestConfig_Dante_ConnString(t *testing.T) {
 	}
 }
 
-func TestConfig_Dante(t *testing.T) {
-	cfg := testutils.NewDanteConfig(t)
+func TestConfig_PgScale(t *testing.T) {
+	cfg := testutils.NewPgScaleConfig(t)
 	c, err := New(cfg)
 	require.NoError(t, err)
 
-	data, err := json.Marshal(c.Dante)
+	data, err := json.Marshal(c.PgScale)
 	require.NoError(t, err)
 
 	var tmp interface{}
 	err = json.Unmarshal(data, &tmp)
 	require.NoError(t, err)
-	require.Equal(t, testutils.NewDanteJSONConfig(t), tmp)
+	require.Equal(t, testutils.NewPgScaleJSONConfig(t), tmp)
 }

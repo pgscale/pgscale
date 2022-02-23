@@ -17,7 +17,7 @@ package config
 import (
 	"testing"
 
-	"github.com/buraksezer/dante/kontext"
+	"github.com/buraksezer/pgscale/kontext"
 	"github.com/stretchr/testify/require"
 )
 

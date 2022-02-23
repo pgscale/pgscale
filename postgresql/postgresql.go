@@ -20,14 +20,14 @@ import (
 	"net"
 	"strings"
 
-	"github.com/buraksezer/dante/config"
-	"github.com/buraksezer/dante/dmaps"
-	"github.com/buraksezer/dante/kontext"
-	"github.com/buraksezer/dante/postgresql/auth"
-	"github.com/buraksezer/dante/postgresql/dbconn"
-	"github.com/buraksezer/dante/tcp"
-	"github.com/buraksezer/dante/utils"
 	"github.com/buraksezer/olric/pkg/flog"
+	"github.com/buraksezer/pgscale/config"
+	"github.com/buraksezer/pgscale/dmaps"
+	"github.com/buraksezer/pgscale/kontext"
+	"github.com/buraksezer/pgscale/postgresql/auth"
+	"github.com/buraksezer/pgscale/postgresql/dbconn"
+	"github.com/buraksezer/pgscale/tcp"
+	"github.com/buraksezer/pgscale/utils"
 	"github.com/jackc/pgproto3/v2"
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -87,17 +87,17 @@ func (p *PostgreSQL) afterRelease(conn *pgx.Conn, db *config.Database) bool {
 }
 
 func (p *PostgreSQL) initializePools() error {
-	for i, database := range p.config.Dante.PostgreSQL.Databases {
+	for i, database := range p.config.PgScale.PostgreSQL.Databases {
 		cfg, err := pgxpool.ParseConfig(database.ConnString())
 		if err != nil {
 			return err
 		}
 
 		cfg.AfterRelease = func(conn *pgx.Conn) bool {
-			return p.afterRelease(conn, &p.config.Dante.PostgreSQL.Databases[i])
+			return p.afterRelease(conn, &p.config.PgScale.PostgreSQL.Databases[i])
 		}
 
-		d := p.config.Dante.PostgreSQL.Databases[i]
+		d := p.config.PgScale.PostgreSQL.Databases[i]
 		_, ok := p.dbconns[cfg.ConnConfig.User]
 		if !ok {
 			p.dbconns[cfg.ConnConfig.User] = make(map[string]*dbconn.Conn)
@@ -134,10 +134,10 @@ func (p *PostgreSQL) ListenAndServe() error {
 }
 
 func (p *PostgreSQL) callback() {
-	p.log.V(1).Printf("[INFO] Dante instance addr: %s",
+	p.log.V(1).Printf("[INFO] PgScale instance addr: %s",
 		net.JoinHostPort(
-			p.config.Dante.BindAddr,
-			p.config.Dante.BindPort,
+			p.config.PgScale.BindAddr,
+			p.config.PgScale.BindPort,
 		),
 	)
 	p.log.V(1).Printf("[INFO] PostgreSQL proxy is ready to accept connections")

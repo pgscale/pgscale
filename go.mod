@@ -1,9 +1,9 @@
-module github.com/buraksezer/dante
+module github.com/buraksezer/pgscale
 
 go 1.17
 
 require (
-	github.com/buraksezer/olric v0.4.0
+	github.com/buraksezer/olric v0.4.3
 	github.com/cespare/xxhash/v2 v2.1.2
 	github.com/hashicorp/hcl/v2 v2.10.1
 	github.com/hashicorp/logutils v1.0.0

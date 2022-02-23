@@ -18,10 +18,10 @@ import (
 	"crypto/rand"
 	"testing"
 
-	"github.com/buraksezer/dante/dmaps"
-	"github.com/buraksezer/dante/kontext"
 	"github.com/buraksezer/olric"
 	"github.com/buraksezer/olric/pkg/flog"
+	"github.com/buraksezer/pgscale/dmaps"
+	"github.com/buraksezer/pgscale/kontext"
 	"github.com/stretchr/testify/require"
 )
 

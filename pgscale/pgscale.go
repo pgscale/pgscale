@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package dante
+package pgscale
 
 import (
 	"errors"
@@ -23,17 +23,17 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/buraksezer/dante/config"
-	"github.com/buraksezer/dante/dmaps"
-	"github.com/buraksezer/dante/kontext"
-	"github.com/buraksezer/dante/postgresql"
-	"github.com/buraksezer/dante/utils"
 	"github.com/buraksezer/olric"
 	"github.com/buraksezer/olric/pkg/flog"
+	"github.com/buraksezer/pgscale/config"
+	"github.com/buraksezer/pgscale/dmaps"
+	"github.com/buraksezer/pgscale/kontext"
+	"github.com/buraksezer/pgscale/postgresql"
+	"github.com/buraksezer/pgscale/utils"
 	"github.com/hashicorp/logutils"
 )
 
-type Dante struct {
+type PgScale struct {
 	config            *config.Config
 	log               *flog.Logger
 	postgres          *postgresql.PostgreSQL
@@ -42,16 +42,16 @@ type Dante struct {
 	shutdownCallbacks []func()
 }
 
-func (d *Dante) configureLogger(c *config.Config) (*flog.Logger, error) {
+func (d *PgScale) configureLogger(c *config.Config) (*flog.Logger, error) {
 	var out *os.File
 
-	switch c.Dante.Logging.Output {
+	switch c.PgScale.Logging.Output {
 	case config.Stderr:
 		out = os.Stderr
 	case config.Stdout:
 		out = os.Stdout
 	default:
-		f, err := os.OpenFile(c.Dante.Logging.Output, os.O_APPEND|os.O_CREATE|os.O_WRONLY, c.Dante.Logging.Perm)
+		f, err := os.OpenFile(c.PgScale.Logging.Output, os.O_APPEND|os.O_CREATE|os.O_WRONLY, c.PgScale.Logging.Perm)
 		if err != nil {
 			return nil, err
 		}
@@ -70,20 +70,20 @@ func (d *Dante) configureLogger(c *config.Config) (*flog.Logger, error) {
 			config.ErrorLog,
 			config.InfoLog,
 		},
-		MinLevel: logutils.LogLevel(strings.ToUpper(c.Dante.Logging.Level)),
+		MinLevel: logutils.LogLevel(strings.ToUpper(c.PgScale.Logging.Level)),
 		Writer:   out,
 	}
 	l := log.New(out, "", log.LstdFlags)
 	l.SetOutput(filter)
 	logger := flog.New(l)
-	logger.SetLevel(c.Dante.Logging.Verbosity)
-	if c.Dante.Logging.Level == config.DebugLog {
+	logger.SetLevel(c.PgScale.Logging.Verbosity)
+	if c.PgScale.Logging.Level == config.DebugLog {
 		logger.ShowLineNumber(1)
 	}
 	return logger, nil
 }
 
-func New(k *kontext.Kontext) (*Dante, error) {
+func New(k *kontext.Kontext) (*PgScale, error) {
 	c, err := config.FromKontext(k)
 	if err != nil {
 		return nil, err
@@ -94,7 +94,7 @@ func New(k *kontext.Kontext) (*Dante, error) {
 		return nil, err
 	}
 
-	d := &Dante{
+	d := &PgScale{
 		config:            c,
 		olric:             db,
 		dmaps:             dmaps.New(db),
@@ -108,7 +108,7 @@ func New(k *kontext.Kontext) (*Dante, error) {
 	return d, err
 }
 
-func (d *Dante) ListenAndServe() error {
+func (d *PgScale) ListenAndServe() error {
 	k := kontext.New()
 	k.Set(kontext.LoggerKey, d.log)
 	k.Set(kontext.ConfigKey, d.config)
@@ -142,7 +142,7 @@ func (d *Dante) ListenAndServe() error {
 	}
 }
 
-func (d *Dante) Shutdown() error {
+func (d *PgScale) Shutdown() error {
 	if d.shutdownCallbacks != nil {
 		for _, f := range d.shutdownCallbacks {
 			f()

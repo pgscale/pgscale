@@ -19,8 +19,8 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/buraksezer/dante/config"
-	"github.com/buraksezer/dante/kontext"
+	"github.com/buraksezer/pgscale/config"
+	"github.com/buraksezer/pgscale/kontext"
 	"github.com/jackc/pgproto3/v2"
 )
 
@@ -193,7 +193,7 @@ func (a *Auth) HandleStartup() (*Session, error) {
 		// Startup is done.
 
 		// Check authentication method and run
-		credentials, ok := a.config.Dante.Auth.Users[s.User]
+		credentials, ok := a.config.PgScale.Auth.Users[s.User]
 		if !ok {
 			return nil, a.errorResponse(fmt.Sprintf("no such user: \"%s\"", s.User))
 		}

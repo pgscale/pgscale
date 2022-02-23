@@ -25,7 +25,7 @@ const (
 	StatementConnectionPoolPolicy = "statement"
 )
 
-type Dante struct {
+type PgScale struct {
 	BindAddr   string     `hcl:"bind_addr"`
 	BindPort   string     `hcl:"bind_port"`
 	Auth       Auth       `hcl:"auth,block"`

@@ -21,11 +21,11 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/buraksezer/dante/config"
-	"github.com/buraksezer/dante/dante"
-	"github.com/buraksezer/dante/kontext"
 	"github.com/buraksezer/olric"
 	olricConfig "github.com/buraksezer/olric/config"
+	"github.com/buraksezer/pgscale/config"
+	"github.com/buraksezer/pgscale/kontext"
+	"github.com/buraksezer/pgscale/pgscale"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -34,19 +34,19 @@ type Server struct {
 	log         *log.Logger
 	olric       *olric.Olric
 	olricConfig *olricConfig.Config
-	dante       *dante.Dante
-	danteConfig *config.Config
+	pgscale     *pgscale.PgScale
+	config      *config.Config
 	errGr       errgroup.Group
 }
 
 // New creates a new Server instance
 func New(configFile string) (*Server, error) {
-	dc, err := config.New(configFile)
+	pc, err := config.New(configFile)
 	if err != nil {
 		return nil, err
 	}
 
-	oc, err := config.MakeOlricConfig(dc)
+	oc, err := config.MakeOlricConfig(pc)
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +54,7 @@ func New(configFile string) (*Server, error) {
 	return &Server{
 		log:         oc.Logger,
 		olricConfig: oc,
-		danteConfig: dc,
+		config:      pc,
 	}, nil
 }
 
@@ -62,24 +62,24 @@ func (s *Server) waitForInterrupt() {
 	shutDownChan := make(chan os.Signal, 1)
 	signal.Notify(shutDownChan, syscall.SIGTERM, syscall.SIGINT)
 	ch := <-shutDownChan
-	s.log.Printf("[dante-server] Signal caught: %s", ch.String())
+	s.log.Printf("[pgscale-server] Signal caught: %s", ch.String())
 
-	danteGone := make(chan struct{})
+	pgscaleGone := make(chan struct{})
 
 	s.errGr.Go(func() error {
-		defer close(danteGone)
+		defer close(pgscaleGone)
 
-		return s.dante.Shutdown()
+		return s.pgscale.Shutdown()
 	})
 
 	s.errGr.Go(func() error {
-		<-danteGone
+		<-pgscaleGone
 
 		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()
 
 		if err := s.olric.Shutdown(ctx); err != nil {
-			s.log.Printf("[dante-server] Failed to shutdown Olric: %v", err)
+			s.log.Printf("[pgscale-server] Failed to shutdown Olric: %v", err)
 			return err
 		}
 
@@ -88,22 +88,22 @@ func (s *Server) waitForInterrupt() {
 
 	// This is not a goroutine leak. The process will quit.
 	go func() {
-		s.log.Printf("[dante-server] Awaiting for background tasks")
-		s.log.Printf("[dante-server] Press CTRL+C or send SIGTERM/SIGINT to quit immediately")
+		s.log.Printf("[pgscale-server] Awaiting for background tasks")
+		s.log.Printf("[pgscale-server] Press CTRL+C or send SIGTERM/SIGINT to quit immediately")
 
 		forceQuitCh := make(chan os.Signal, 1)
 		signal.Notify(forceQuitCh, syscall.SIGTERM, syscall.SIGINT)
 		ch := <-forceQuitCh
 
-		s.log.Printf("[dante-server] Signal caught: %s", ch.String())
-		s.log.Printf("[dante-server] Quits with exit code 1")
+		s.log.Printf("[pgscale-server] Signal caught: %s", ch.String())
+		s.log.Printf("[pgscale-server] Quits with exit code 1")
 		os.Exit(1)
 	}()
 }
 
-// Start starts a new Dante server instance and blocks until the server is closed.
+// Start starts a new PgScale server instance and blocks until the server is closed.
 func (s *Server) Start() error {
-	s.log.Printf("[dante-server] pid: %d has been started", os.Getpid())
+	s.log.Printf("[pgscale-server] pid: %d has been started", os.Getpid())
 	// Wait for SIGTERM or SIGINT
 	go s.waitForInterrupt()
 
@@ -121,17 +121,17 @@ func (s *Server) Start() error {
 
 	k := kontext.New()
 	k.Set(kontext.OlricKey, db)
-	k.Set(kontext.ConfigKey, s.danteConfig)
+	k.Set(kontext.ConfigKey, s.config)
 
-	g, err := dante.New(k)
+	g, err := pgscale.New(k)
 	if err != nil {
 		return err
 	}
-	s.dante = g
+	s.pgscale = g
 
 	s.errGr.Go(func() error {
 		if err = s.olric.Start(); err != nil {
-			s.log.Printf("[dante-server] Failed to run Olric: %v", err)
+			s.log.Printf("[pgscale-server] Failed to run Olric: %v", err)
 			return err
 		}
 		return nil
@@ -140,8 +140,8 @@ func (s *Server) Start() error {
 	s.errGr.Go(func() error {
 		<-ctx.Done()
 
-		if err = s.dante.ListenAndServe(); err != nil {
-			s.log.Printf("[dante-server] Failed to run Dante: %v", err)
+		if err = s.pgscale.ListenAndServe(); err != nil {
+			s.log.Printf("[pgscale-server] Failed to run PgScale: %v", err)
 			return err
 		}
 		return nil

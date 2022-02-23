@@ -99,7 +99,7 @@ func NewOlricInstance(t *testing.T) *olric.Olric {
 
 func CreateTmpfile(t *testing.T, pattern string, data []byte) (*os.File, error) {
 	if pattern == "" {
-		pattern = "dante.*.test"
+		pattern = "pgscale.*.test"
 	}
 	tmpfile, err := ioutil.TempFile("", pattern)
 	if err != nil {
@@ -131,16 +131,16 @@ func NewCredentialsFile(t *testing.T) (string, error) {
 	return f.Name(), nil
 }
 
-func NewDanteConfig(t *testing.T) string {
-	data := openFixtureFile("fixtures/dante-server.hcl")
-	f, err := CreateTmpfile(t, "dante-server.*.hcl", data)
+func NewPgScaleConfig(t *testing.T) string {
+	data := openFixtureFile("fixtures/pgscale-server.hcl")
+	f, err := CreateTmpfile(t, "pgscale-server.*.hcl", data)
 	require.NoError(t, err)
 	return f.Name()
 }
 
-func NewDanteJSONConfig(t *testing.T) interface{} {
-	data := openFixtureFile("fixtures/dante-server.json")
-	f, err := CreateTmpfile(t, "dante-server.*.json", data)
+func NewPgScaleJSONConfig(t *testing.T) interface{} {
+	data := openFixtureFile("fixtures/pgscale-server.json")
+	f, err := CreateTmpfile(t, "pgscale-server.*.json", data)
 	require.NoError(t, err)
 	f.Name()
 

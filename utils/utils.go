@@ -19,10 +19,10 @@ import (
 	"fmt"
 	"unsafe"
 
-	"github.com/buraksezer/dante/dmaps"
-	"github.com/buraksezer/dante/kontext"
 	"github.com/buraksezer/olric"
 	"github.com/buraksezer/olric/pkg/flog"
+	"github.com/buraksezer/pgscale/dmaps"
+	"github.com/buraksezer/pgscale/kontext"
 )
 
 const NULByte = byte(0)

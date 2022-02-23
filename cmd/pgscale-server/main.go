@@ -23,13 +23,13 @@ import (
 	"path"
 	"runtime"
 
-	"github.com/buraksezer/dante/cmd/dante-server/server"
 	"github.com/buraksezer/olric"
+	"github.com/buraksezer/pgscale/cmd/pgscale-server/server"
 	"github.com/sean-/seed"
 )
 
 func usage() {
-	var msg = `Usage: dante-server [options] ...
+	var msg = `Usage: pgscale-server [options] ...
 
 Distributed query cache and connection pool middleware for PostgreSQL.
 
@@ -39,7 +39,7 @@ Options:
   -c, --config     Set configuration file path.
 
 The Go runtime version %s
-Report bugs to https://github.com/buraksezer/dante/issues
+Report bugs to https://github.com/buraksezer/pgscale/issues
 `
 	_, err := fmt.Fprintf(os.Stdout, msg, runtime.Version())
 	if err != nil {
@@ -60,8 +60,8 @@ var (
 
 const (
 	// EnvConfigFile is the name of environment variable which can be used to override default configuration file path.
-	EnvConfigFile     = "DANTE_SERVER_CONFIG"
-	DefaultConfigFile = "dante-server.hcl"
+	EnvConfigFile     = "PGSCALE_SERVER_CONFIG"
+	DefaultConfigFile = "pgscale-server.hcl"
 )
 
 func main() {
@@ -71,7 +71,7 @@ func main() {
 
 	currentDir, err := os.Getwd()
 	if err != nil {
-		log.Fatalf("dante-server: failed to find current directory: %v", err)
+		log.Fatalf("pgscale-server: failed to find current directory: %v", err)
 	}
 	configFile := path.Join(currentDir, DefaultConfigFile)
 
@@ -88,11 +88,11 @@ func main() {
 	f.StringVar(&args.config, "c", configFile, "")
 
 	if err := f.Parse(os.Args[1:]); err != nil {
-		log.Fatalf("dante-server: failed to parse flags: %v", err)
+		log.Fatalf("pgscale-server: failed to parse flags: %v", err)
 	}
 
 	if args.version {
-		fmt.Printf("Dante Version: %s\n", Version)
+		fmt.Printf("PgScale Version: %s\n", Version)
 		fmt.Printf("Git SHA: %s\n", GitSHA)
 		fmt.Printf("Olric Version: %s\n", olric.ReleaseVersion)
 		fmt.Printf("Go Version: %s\n", runtime.Version())
@@ -116,11 +116,11 @@ func main() {
 
 	s, err := server.New(args.config)
 	if err != nil {
-		log.Fatalf("dante-server: %v", err)
+		log.Fatalf("pgscale-server: %v", err)
 	}
 
 	if err = s.Start(); err != nil {
-		log.Fatalf("dante-server: %v", err)
+		log.Fatalf("pgscale-server: %v", err)
 	}
 
 	log.Print("Quit!")

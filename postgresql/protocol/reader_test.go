@@ -17,7 +17,7 @@ package protocol
 import (
 	"testing"
 
-	"github.com/buraksezer/dante/testutils"
+	"github.com/buraksezer/pgscale/testutils"
 	"github.com/jackc/pgproto3/v2"
 	"github.com/stretchr/testify/require"
 )
