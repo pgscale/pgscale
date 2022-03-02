@@ -14,8 +14,62 @@
 
 package pgscale
 
-import "testing"
+import (
+	"context"
+	"testing"
+	"time"
+
+	"github.com/buraksezer/olric"
+	"github.com/pgscale/pgscale/config"
+	"github.com/pgscale/pgscale/kontext"
+	"github.com/pgscale/pgscale/testutils"
+	"github.com/stretchr/testify/require"
+	"golang.org/x/sync/errgroup"
+)
 
 func TestPgScale_ListenAndServe(t *testing.T) {
+	configFile := testutils.NewPgScaleConfig(t)
+	c, err := config.New(configFile)
 
+	olricConfig, err := config.MakeOlricConfig(c)
+	require.NoError(t, err)
+
+	ctx, cancel := context.WithCancel(context.Background())
+	callback := func() {
+		defer cancel()
+	}
+	olricConfig.Started = callback
+
+	db, err := olric.New(olricConfig)
+	require.NoError(t, err)
+
+	var errGr errgroup.Group
+	errGr.Go(func() error {
+		return db.Start()
+	})
+
+	<-ctx.Done()
+
+	k := kontext.New()
+	k.Set(kontext.OlricKey, db)
+	k.Set(kontext.ConfigKey, c)
+
+	pg, err := New(k)
+	require.NoError(t, err)
+
+	errGr.Go(func() error {
+		return pg.ListenAndServe()
+	})
+
+	<-time.After(250 * time.Millisecond)
+
+	errGr.Go(func() error {
+		return pg.Shutdown()
+	})
+
+	errGr.Go(func() error {
+		return db.Shutdown(context.Background())
+	})
+
+	require.NoError(t, errGr.Wait())
 }
