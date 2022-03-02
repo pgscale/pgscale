@@ -19,8 +19,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/hashicorp/hcl/v2/hclsimple"
 	"github.com/pgscale/pgscale/kontext"
+	"gopkg.in/yaml.v3"
 )
 
 var ErrConfigNotFound = errors.New("no config key found")
@@ -37,8 +37,15 @@ const (
 )
 
 type Config struct {
-	PgScale PgScale `hcl:"pgscale,block"`
-	Olric   Olric   `hcl:"olric,block"`
+	PgScale PgScale `yaml:"pgscale"`
+	Olric   Olric   `yaml:"olric"`
+}
+
+func (c *Config) Sanitize() error {
+	if err := c.PgScale.PostgreSQL.Sanitize(); err != nil {
+		return err
+	}
+	return nil
 }
 
 func FromKontext(k *kontext.Kontext) (*Config, error) {
@@ -56,12 +63,20 @@ func FromKontext(k *kontext.Kontext) (*Config, error) {
 
 func New(filename string) (*Config, error) {
 	if _, err := os.Stat(filename); os.IsNotExist(err) {
-		return nil, fmt.Errorf("file does not exist: %s", filename)
+		return nil, fmt.Errorf("configuration file does not exist: %s", filename)
+	}
+	r, err := os.Open(filename)
+	if err != nil {
+		return nil, fmt.Errorf("unable to open configuration file: %s: %w", filename, err)
 	}
 
 	var c Config
-	err := hclsimple.DecodeFile(filename, nil, &c)
+	err = yaml.NewDecoder(r).Decode(&c)
 	if err != nil {
+		return nil, err
+	}
+
+	if err = c.Sanitize(); err != nil {
 		return nil, err
 	}
 

@@ -87,24 +87,23 @@ func (p *PostgreSQL) afterRelease(conn *pgx.Conn, db *config.Database) bool {
 }
 
 func (p *PostgreSQL) initializePools() error {
-	for i, database := range p.config.PgScale.PostgreSQL.Databases {
+	for dbname, database := range p.config.PgScale.PostgreSQL.Databases {
 		cfg, err := pgxpool.ParseConfig(database.ConnString())
 		if err != nil {
 			return err
 		}
 
 		cfg.AfterRelease = func(conn *pgx.Conn) bool {
-			return p.afterRelease(conn, &p.config.PgScale.PostgreSQL.Databases[i])
+			return p.afterRelease(conn, p.config.PgScale.PostgreSQL.Databases[dbname])
 		}
 
-		d := p.config.PgScale.PostgreSQL.Databases[i]
 		_, ok := p.dbconns[cfg.ConnConfig.User]
 		if !ok {
 			p.dbconns[cfg.ConnConfig.User] = make(map[string]*dbconn.Conn)
 		}
 		db := p.dbconns[cfg.ConnConfig.User]
 		db[cfg.ConnConfig.Database] = &dbconn.Conn{
-			Database: &d,
+			Database: database,
 			Config:   cfg,
 		}
 	}

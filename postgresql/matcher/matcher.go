@@ -15,7 +15,7 @@
 package matcher
 
 import (
-	pg_query "github.com/pganalyze/pg_query_go/v2"
+	pgquery "github.com/pganalyze/pg_query_go/v2"
 	"github.com/pgscale/pgscale/config"
 	"github.com/pgscale/pgscale/utils"
 	"github.com/valyala/fastjson"
@@ -38,18 +38,18 @@ func (q *Query) add(schema, table string) {
 	q.hierarchy[schema][table] = struct{}{}
 }
 
-func (q *Query) Match(c []*config.Cache, f func(t *config.Table) (bool, error)) (bool, error) {
-	for _, cache := range c {
-		s, ok := q.hierarchy[cache.Schema]
+func (q *Query) Match(schemas map[string]*config.Schema, f func(t *config.Table) (bool, error)) (bool, error) {
+	for _, schema := range schemas {
+		s, ok := q.hierarchy[schema.Schema]
 		if !ok {
 			return false, nil
 		}
 
-		for i, table := range cache.Tables {
+		for tableName, table := range schema.Tables {
 			if _, ok = s[table.Name]; !ok {
 				continue
 			}
-			return f(cache.Tables[i])
+			return f(schema.Tables[tableName])
 		}
 	}
 
@@ -79,7 +79,7 @@ func discoveryHierarchy(q *Query, value *fastjson.Value) {
 }
 
 func Parse(query []byte) (*Query, error) {
-	result, err := pg_query.ParseToJSON(utils.ByteToString(query))
+	result, err := pgquery.ParseToJSON(utils.ByteToString(query))
 	if err != nil {
 		return nil, err
 	}

@@ -26,36 +26,62 @@ const (
 )
 
 type PgScale struct {
-	BindAddr   string     `hcl:"bind_addr"`
-	BindPort   string     `hcl:"bind_port"`
-	Auth       Auth       `hcl:"auth,block"`
-	Logging    Logging    `hcl:"logging,block"`
-	PostgreSQL PostgreSQL `hcl:"postgresql,block"`
+	BindAddr   string     `yaml:"bindAddr"`
+	BindPort   string     `yaml:"bindPort"`
+	Auth       Auth       `yaml:"auth"`
+	Logging    Logging    `yaml:"logging"`
+	PostgreSQL PostgreSQL `yaml:"postgresql"`
 }
 
 type Logging struct {
-	Perm      os.FileMode `hcl:"perm"`
-	Verbosity int32       `hcl:"verbosity"`
-	Level     string      `hcl:"level"`
-	Output    string      `hcl:"output"`
+	Perm      os.FileMode `yaml:"perm"`
+	Verbosity int32       `yaml:"verbosity"`
+	Level     string      `yaml:"level"`
+	Output    string      `yaml:"output"`
 }
 
 type ConnectionPool struct {
-	Policy            string  `hcl:"policy"`
-	MaxConnIdleTime   *string `hcl:"max_conn_idle_time"`
-	MaxConnLifetime   *string `hcl:"max_conn_lifetime"`
-	HealthCheckPeriod *string `hcl:"health_check_period"`
-	MinConns          *int    `hcl:"min_conns"`
-	MaxConns          *int    `hcl:"max_conns"`
+	Policy            string  `yaml:"policy"`
+	MaxConnIdleTime   *string `yaml:"maxConnIdleTime"`
+	MaxConnLifetime   *string `yaml:"maxConnLifeTime"`
+	HealthCheckPeriod *string `yaml:"healthCheckPeriod"`
+	MinConns          *int    `yaml:"minConns"`
+	MaxConns          *int    `yaml:"maxConns"`
+}
+
+type Table struct {
+	DMapName        string
+	Name            string  `yaml:"name"`
+	MaxIdleDuration *string `yaml:"maxIdleDuration"`
+	TTLDuration     *string `yaml:"ttlDuration"`
+	MaxKeys         *int    `yaml:"maxKeys"`
+	MaxInuse        *int    `yaml:"maxInuse"`
+	LRUSamples      *int    `yaml:"lruSamples"`
+	EvictionPolicy  *string `yaml:"evictionPolicy"`
+	StorageEngine   *string `yaml:"storageEngine"`
+}
+
+type Schema struct {
+	Schema                      string            `yaml:"schema"`
+	NumEvictionWorkers          *int64            `yaml:"numEvictionWorkers"`
+	MaxIdleDuration             *string           `yaml:"maxIdleDuration"`
+	TTLDuration                 *string           `yaml:"ttlDuration"`
+	MaxKeys                     *int              `yaml:"maxKeys"`
+	MaxInuse                    *int              `yaml:"maxInuse"`
+	LRUSamples                  *int              `yaml:"lruSamples"`
+	EvictionPolicy              *string           `yaml:"evictionPolicy"`
+	StorageEngine               *string           `yaml:"storageEngine"`
+	CheckEmptyFragmentsInterval *string           `yaml:"checkEmptyFragmentsInterval"`
+	Tables                      map[string]*Table `yaml:"tables"`
 }
 
 type Database struct {
-	Dbname         string            `hcl:"dbname,label"`
-	Parameters     map[string]string `hcl:"parameters"`
-	ConnectionPool ConnectionPool    `hcl:"connection_pool,block"`
-	LogStatements  bool              `hcl:"log_statements"`
-	ResetQuery     string            `hcl:"reset_query"`
-	Caches         []*Cache          `hcl:"cache,block"`
+	Dbname         string
+	Parameters     map[string]string  `yaml:"parameters"`
+	ConnectionPool ConnectionPool     `yaml:"connectionPool"`
+	LogStatements  bool               `yaml:"logStatements"`
+	ResetQuery     string             `yaml:"resetQuery"`
+	Schemas        map[string]*Schema `yaml:"schemas"`
 }
 
 func (d Database) ConnString() string {
@@ -98,31 +124,13 @@ func (d Database) ConnString() string {
 }
 
 type PostgreSQL struct {
-	Databases []Database `hcl:"database,block"`
+	Databases map[string]*Database `yaml:"databases"`
 }
 
-type Table struct {
-	DMapName        string
-	Name            string  `hcl:"name,label"`
-	MaxIdleDuration *string `hcl:"max_idle_duration"`
-	TTLDuration     *string `hcl:"ttl_duration"`
-	MaxKeys         *int    `hcl:"max_keys"`
-	MaxInuse        *int    `hcl:"max_inuse"`
-	LRUSamples      *int    `hcl:"lru_samples"`
-	EvictionPolicy  *string `hcl:"eviction_policy"`
-	StorageEngine   *string `hcl:"storage_engine"`
-}
+func (p *PostgreSQL) Sanitize() error {
+	for dbname, db := range p.Databases {
+		db.Dbname = dbname
+	}
 
-type Cache struct {
-	Schema                      string   `hcl:"schema,label"`
-	NumEvictionWorkers          *int64   `hcl:"numEvictionWorkers"`
-	MaxIdleDuration             *string  `hcl:"maxIdleDuration"`
-	TTLDuration                 *string  `hcl:"ttlDuration"`
-	MaxKeys                     *int     `hcl:"maxKeys"`
-	MaxInuse                    *int     `hcl:"maxInuse"`
-	LRUSamples                  *int     `hcl:"lruSamples"`
-	EvictionPolicy              *string  `hcl:"evictionPolicy"`
-	StorageEngine               *string  `hcl:"storageEngine"`
-	CheckEmptyFragmentsInterval *string  `hcl:"checkEmptyFragmentsInterval"`
-	Tables                      []*Table `hcl:"table,block"`
+	return nil
 }

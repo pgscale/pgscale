@@ -16,12 +16,12 @@ package tcp
 
 import (
 	"context"
+	"github.com/pgscale/pgscale/config"
 	"net"
 	"strconv"
 	"testing"
 	"time"
 
-	"github.com/pgscale/pgscale/config"
 	"github.com/pgscale/pgscale/kontext"
 	"github.com/pgscale/pgscale/testutils"
 	"github.com/stretchr/testify/require"
@@ -31,7 +31,7 @@ func TestTCP_Server(t *testing.T) {
 	port, err := testutils.GetFreePort()
 	require.NoError(t, err)
 
-	cfg := testutils.NewPgScaleConfig(t)
+	cfg := testutils.NewPgScaleConfigYaml(t)
 	c, err := config.New(cfg)
 	require.NoError(t, err)
 

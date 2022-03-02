@@ -27,49 +27,49 @@ func prepareDMapConfig(c *Config) (*olricConfig.DMaps, error) {
 	}
 
 	for _, db := range c.PgScale.PostgreSQL.Databases {
-		for _, cache := range db.Caches {
-			df := olricConfig.DMaps{}
-			if cache.NumEvictionWorkers != nil {
-				df.NumEvictionWorkers = *cache.NumEvictionWorkers
+		for _, schema := range db.Schemas {
+			globalDMapConfig := olricConfig.DMaps{}
+			if schema.NumEvictionWorkers != nil {
+				globalDMapConfig.NumEvictionWorkers = *schema.NumEvictionWorkers
 			}
 
-			if cache.MaxIdleDuration != nil {
-				maxIdleDuration, err := time.ParseDuration(*cache.MaxIdleDuration)
+			if schema.MaxIdleDuration != nil {
+				maxIdleDuration, err := time.ParseDuration(*schema.MaxIdleDuration)
 				if err != nil {
 					return nil, err
 				}
-				df.MaxIdleDuration = maxIdleDuration
+				globalDMapConfig.MaxIdleDuration = maxIdleDuration
 			}
 
-			if cache.TTLDuration != nil {
-				ttlDuration, err := time.ParseDuration(*cache.TTLDuration)
+			if schema.TTLDuration != nil {
+				ttlDuration, err := time.ParseDuration(*schema.TTLDuration)
 				if err != nil {
 					return nil, err
 				}
-				df.TTLDuration = ttlDuration
+				globalDMapConfig.TTLDuration = ttlDuration
 			}
 
-			if cache.MaxKeys != nil {
-				df.MaxKeys = *cache.MaxKeys
+			if schema.MaxKeys != nil {
+				globalDMapConfig.MaxKeys = *schema.MaxKeys
 			}
 
-			if cache.MaxInuse != nil {
-				df.MaxInuse = *cache.MaxInuse
+			if schema.MaxInuse != nil {
+				globalDMapConfig.MaxInuse = *schema.MaxInuse
 			}
 
-			if cache.LRUSamples != nil {
-				df.LRUSamples = *cache.LRUSamples
+			if schema.LRUSamples != nil {
+				globalDMapConfig.LRUSamples = *schema.LRUSamples
 			}
 
-			if cache.EvictionPolicy != nil {
-				df.EvictionPolicy = olricConfig.EvictionPolicy(*cache.EvictionPolicy)
+			if schema.EvictionPolicy != nil {
+				globalDMapConfig.EvictionPolicy = olricConfig.EvictionPolicy(*schema.EvictionPolicy)
 			}
 
-			if cache.StorageEngine != nil {
-				df.StorageEngine = *cache.StorageEngine
+			if schema.StorageEngine != nil {
+				globalDMapConfig.StorageEngine = *schema.StorageEngine
 			}
 
-			for _, table := range cache.Tables {
+			for _, table := range schema.Tables {
 				dm := olricConfig.DMap{}
 				if table.MaxIdleDuration != nil {
 					maxIdleDuration, err := time.ParseDuration(*table.MaxIdleDuration)
@@ -78,7 +78,7 @@ func prepareDMapConfig(c *Config) (*olricConfig.DMaps, error) {
 					}
 					dm.MaxIdleDuration = maxIdleDuration
 				} else {
-					dm.MaxIdleDuration = df.MaxIdleDuration
+					dm.MaxIdleDuration = globalDMapConfig.MaxIdleDuration
 				}
 
 				if table.TTLDuration != nil {
@@ -88,34 +88,34 @@ func prepareDMapConfig(c *Config) (*olricConfig.DMaps, error) {
 					}
 					dm.TTLDuration = ttlDuration
 				} else {
-					dm.TTLDuration = df.TTLDuration
+					dm.TTLDuration = globalDMapConfig.TTLDuration
 				}
 
 				if table.MaxKeys != nil {
 					dm.MaxKeys = *table.MaxKeys
 				} else {
-					dm.MaxKeys = df.MaxKeys
+					dm.MaxKeys = globalDMapConfig.MaxKeys
 				}
 
 				if table.MaxInuse != nil {
 					dm.MaxInuse = *table.MaxInuse
 				} else {
-					dm.MaxInuse = df.MaxInuse
+					dm.MaxInuse = globalDMapConfig.MaxInuse
 				}
 
 				if table.LRUSamples != nil {
 					dm.LRUSamples = *table.LRUSamples
 				} else {
-					dm.LRUSamples = df.LRUSamples
+					dm.LRUSamples = globalDMapConfig.LRUSamples
 				}
 
 				if table.EvictionPolicy != nil {
 					dm.EvictionPolicy = olricConfig.EvictionPolicy(*table.EvictionPolicy)
 				} else {
-					dm.EvictionPolicy = df.EvictionPolicy
+					dm.EvictionPolicy = globalDMapConfig.EvictionPolicy
 				}
 
-				table.DMapName = fmt.Sprintf("%s.%s.%s", db.Dbname, cache.Schema, table.Name)
+				table.DMapName = fmt.Sprintf("%s.%s.%s", db.Dbname, schema.Schema, table.Name)
 				ds.Custom[table.DMapName] = dm
 			}
 		}

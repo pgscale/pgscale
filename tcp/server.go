@@ -16,11 +16,11 @@ package tcp
 
 import (
 	"context"
+	"github.com/pgscale/pgscale/config"
 	"net"
 	"sync"
 
 	"github.com/buraksezer/olric/pkg/flog"
-	"github.com/pgscale/pgscale/config"
 	"github.com/pgscale/pgscale/kontext"
 	"github.com/pgscale/pgscale/utils"
 )

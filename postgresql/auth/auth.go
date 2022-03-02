@@ -78,13 +78,13 @@ func (a *Auth) authOK() error {
 	return err
 }
 
-func (a *Auth) checkMD5Password(s *Session, msg *pgproto3.PasswordMessage, creds map[string]string) bool {
+func (a *Auth) checkMD5Password(s *Session, msg *pgproto3.PasswordMessage, user *config.User) bool {
 	// PostgreSQL MD5-hashed password format: "md5" + md5(password + username)
-	return fmt.Sprintf("md5%s", creds["hash"]) == msg.Password
+	return fmt.Sprintf("md5%s", user.Hash) == msg.Password
 }
 
-func (a *Auth) checkCleartextPassword(msg *pgproto3.PasswordMessage, creds map[string]string) bool {
-	return creds["password"] == msg.Password
+func (a *Auth) checkCleartextPassword(msg *pgproto3.PasswordMessage, user *config.User) bool {
+	return user.Password == msg.Password
 }
 
 func (a *Auth) errorResponse(msg string) error {
@@ -99,15 +99,15 @@ func (a *Auth) errorResponse(msg string) error {
 	return fmt.Errorf(msg)
 }
 
-func (a *Auth) authUserWithPassword(s *Session, credentials map[string]string, msg *pgproto3.PasswordMessage) error {
-	authType := credentials["auth_type"]
+func (a *Auth) authUserWithPassword(s *Session, user *config.User, msg *pgproto3.PasswordMessage) error {
+	authType := user.AuthType
 	switch authType {
 	case config.MD5AuthType:
-		if !a.checkMD5Password(s, msg, credentials) {
+		if !a.checkMD5Password(s, msg, user) {
 			return a.errorResponse(fmt.Sprintf("password authentication failed for user \"%s\"", s.User))
 		}
 	case config.PasswordAuthType:
-		if !a.checkCleartextPassword(msg, credentials) {
+		if !a.checkCleartextPassword(msg, user) {
 			return a.errorResponse(fmt.Sprintf("password authentication failed for user \"%s\"", s.User))
 		}
 	default:
@@ -131,7 +131,7 @@ func (a *Auth) authUserWithPassword(s *Session, credentials map[string]string, m
 	return nil
 }
 
-func (a *Auth) HandleAuth(s *Session, credentials map[string]string) (*Session, error) {
+func (a *Auth) HandleAuth(s *Session, user *config.User) (*Session, error) {
 	frontendMsg, err := a.backend.Receive()
 	if err != nil {
 		return nil, fmt.Errorf("error receiving auth message: %w", err)
@@ -139,7 +139,7 @@ func (a *Auth) HandleAuth(s *Session, credentials map[string]string) (*Session, 
 
 	switch msg := frontendMsg.(type) {
 	case *pgproto3.PasswordMessage:
-		if err := a.authUserWithPassword(s, credentials, msg); err != nil {
+		if err := a.authUserWithPassword(s, user, msg); err != nil {
 			return nil, err
 		}
 	default:
@@ -193,12 +193,12 @@ func (a *Auth) HandleStartup() (*Session, error) {
 		// Startup is done.
 
 		// Check authentication method and run
-		credentials, ok := a.config.PgScale.Auth.Users[s.User]
+		user, ok := a.config.PgScale.Auth.Users[s.User]
 		if !ok {
 			return nil, a.errorResponse(fmt.Sprintf("no such user: \"%s\"", s.User))
 		}
 
-		authType := credentials["auth_type"]
+		authType := user.AuthType
 
 		switch authType {
 		case config.TrustAuthType:
@@ -210,12 +210,12 @@ func (a *Auth) HandleStartup() (*Session, error) {
 			if err = a.doCleartextPasswordAuth(); err != nil {
 				return nil, err
 			}
-			return a.HandleAuth(s, credentials)
+			return a.HandleAuth(s, &user)
 		case config.MD5AuthType:
 			if err = a.doMD5PasswordAuth(); err != nil {
 				return nil, err
 			}
-			return a.HandleAuth(s, credentials)
+			return a.HandleAuth(s, &user)
 		default:
 			return nil, fmt.Errorf("unknown auth type: %s", authType)
 		}

@@ -60,7 +60,7 @@ func (p *Proxy) handleSimpleQuery(data *protocol.DataPacket) (bool, error) {
 		return false, err
 	}
 
-	return query.Match(p.dbconn.Database.Caches, func(table *config.Table) (bool, error) {
+	return query.Match(p.dbconn.Database.Schemas, func(table *config.Table) (bool, error) {
 		servedFromCache, err = p.cacheSimpleQuery(table, data)
 		if err != nil {
 			return false, err

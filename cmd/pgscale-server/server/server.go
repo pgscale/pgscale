@@ -37,32 +37,41 @@ type Server struct {
 	pgscale     *pgscale.PgScale
 	config      *config.Config
 	errGr       errgroup.Group
+	ctx         context.Context
+	cancel      context.CancelFunc
 }
 
 // New creates a new Server instance
 func New(configFile string) (*Server, error) {
-	pc, err := config.New(configFile)
+	c, err := config.New(configFile)
 	if err != nil {
 		return nil, err
 	}
 
-	oc, err := config.MakeOlricConfig(pc)
+	oc, err := config.MakeOlricConfig(c)
 	if err != nil {
 		return nil, err
 	}
 
+	ctx, cancel := context.WithCancel(context.Background())
 	return &Server{
 		log:         oc.Logger,
 		olricConfig: oc,
-		config:      pc,
+		config:      c,
+		ctx:         ctx,
+		cancel:      cancel,
 	}, nil
 }
 
 func (s *Server) waitForInterrupt() {
 	shutDownChan := make(chan os.Signal, 1)
 	signal.Notify(shutDownChan, syscall.SIGTERM, syscall.SIGINT)
-	ch := <-shutDownChan
-	s.log.Printf("[pgscale-server] Signal caught: %s", ch.String())
+
+	select {
+	case ch := <-shutDownChan:
+		s.log.Printf("[pgscale-server] Signal caught: %s", ch.String())
+	case <-s.ctx.Done():
+	}
 
 	pgscaleGone := make(chan struct{})
 
@@ -130,6 +139,7 @@ func (s *Server) Start() error {
 	s.pgscale = g
 
 	s.errGr.Go(func() error {
+		defer s.cancel()
 		if err = s.olric.Start(); err != nil {
 			s.log.Printf("[pgscale-server] Failed to run Olric: %v", err)
 			return err
@@ -138,6 +148,7 @@ func (s *Server) Start() error {
 	})
 
 	s.errGr.Go(func() error {
+		defer s.cancel()
 		<-ctx.Done()
 
 		if err = s.pgscale.ListenAndServe(); err != nil {

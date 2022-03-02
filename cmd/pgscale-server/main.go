@@ -61,7 +61,7 @@ var (
 const (
 	// EnvConfigFile is the name of environment variable which can be used to override default configuration file path.
 	EnvConfigFile     = "PGSCALE_SERVER_CONFIG"
-	DefaultConfigFile = "pgscale-server.hcl"
+	DefaultConfigFile = "pgscale-server.yml"
 )
 
 func main() {

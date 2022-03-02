@@ -22,6 +22,12 @@ const (
 	TrustAuthType       = "trust"
 )
 
+type User struct {
+	AuthType string `yaml:"authType"`
+	Hash     string `yaml:"hash"`
+	Password string `yaml:"password"`
+}
+
 type Auth struct {
-	Users map[string]map[string]string `hcl:"users"`
+	Users map[string]User `yaml:"users"`
 }

@@ -69,7 +69,7 @@ func (p *Proxy) handleExtendedQuery(c *protocol.Reader, data *protocol.DataPacke
 		return false, err
 	}
 
-	return query.Match(p.dbconn.Database.Caches, func(table *config.Table) (bool, error) {
+	return query.Match(p.dbconn.Database.Schemas, func(table *config.Table) (bool, error) {
 		servedFromCache, err = p.cacheExtendedQuery(table, c, data)
 		if err != nil {
 			return false, err

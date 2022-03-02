@@ -1,115 +1,196 @@
 {
-  "BindAddr": "127.0.0.1",
-  "BindPort": "6957",
-  "Auth": {
-    "Users": {
-      "admin": {
-        "auth_type": "md5",
-        "hash": "558e292c17f2b28142ab3a85d92952fd"
-      },
-      "dbuser": {
-        "auth_type": "password",
-        "password": "1234"
+  "PgScale": {
+    "BindAddr": "127.0.0.1",
+    "BindPort": "6957",
+    "Auth": {
+      "Users": {
+        "admin": {
+          "AuthType": "md5",
+          "Hash": "558e292c17f2b28142ab3a85d92952fd",
+          "Password": ""
+        },
+        "dbuser": {
+          "AuthType": "password",
+          "Hash": "",
+          "Password": "1234"
+        }
+      }
+    },
+    "Logging": {
+      "Perm": 420,
+      "Verbosity": 6,
+      "Level": "DEBUG",
+      "Output": "stderr"
+    },
+    "PostgreSQL": {
+      "Databases": {
+        "another-database": {
+          "Dbname": "another-database",
+          "Parameters": {
+            "host": "localhost",
+            "port": "5432",
+            "user": "postgres"
+          },
+          "ConnectionPool": {
+            "Policy": "statement",
+            "MaxConnIdleTime": "15m",
+            "MaxConnLifetime": "1h",
+            "HealthCheckPeriod": "1m",
+            "MinConns": 0,
+            "MaxConns": 50
+          },
+          "LogStatements": true,
+          "ResetQuery": "DISCARD ALL",
+          "Schemas": null
+        },
+        "database-name": {
+          "Dbname": "database-name",
+          "Parameters": {
+            "host": "localhost",
+            "port": "5432",
+            "user": "postgres"
+          },
+          "ConnectionPool": {
+            "Policy": "statement",
+            "MaxConnIdleTime": "15m",
+            "MaxConnLifetime": "1h",
+            "HealthCheckPeriod": "1m",
+            "MinConns": 0,
+            "MaxConns": 50
+          },
+          "LogStatements": true,
+          "ResetQuery": "DISCARD ALL",
+          "Schemas": {
+            "another-schema": {
+              "Schema": "",
+              "NumEvictionWorkers": null,
+              "MaxIdleDuration": null,
+              "TTLDuration": null,
+              "MaxKeys": null,
+              "MaxInuse": null,
+              "LRUSamples": null,
+              "EvictionPolicy": null,
+              "StorageEngine": null,
+              "CheckEmptyFragmentsInterval": null,
+              "Tables": {
+                "users": {
+                  "DMapName": "",
+                  "Name": "",
+                  "MaxIdleDuration": "60m",
+                  "TTLDuration": "10m",
+                  "MaxKeys": 500000,
+                  "MaxInuse": null,
+                  "LRUSamples": 20,
+                  "EvictionPolicy": "NONE",
+                  "StorageEngine": "kvstore"
+                }
+              }
+            },
+            "public": {
+              "Schema": "",
+              "NumEvictionWorkers": null,
+              "MaxIdleDuration": "60m",
+              "TTLDuration": "10m",
+              "MaxKeys": 500000,
+              "MaxInuse": null,
+              "LRUSamples": 20,
+              "EvictionPolicy": "NONE",
+              "StorageEngine": "kvstore",
+              "CheckEmptyFragmentsInterval": null,
+              "Tables": {
+                "profile": {
+                  "DMapName": "",
+                  "Name": "",
+                  "MaxIdleDuration": "60m",
+                  "TTLDuration": "10m",
+                  "MaxKeys": 500000,
+                  "MaxInuse": null,
+                  "LRUSamples": 20,
+                  "EvictionPolicy": "NONE",
+                  "StorageEngine": "kvstore"
+                },
+                "users": {
+                  "DMapName": "",
+                  "Name": "",
+                  "MaxIdleDuration": "60m",
+                  "TTLDuration": "10m",
+                  "MaxKeys": 500000,
+                  "MaxInuse": null,
+                  "LRUSamples": 20,
+                  "EvictionPolicy": "NONE",
+                  "StorageEngine": "kvstore"
+                }
+              }
+            }
+          }
+        }
       }
     }
   },
-  "Logging": {
-    "Perm": 644,
-    "Verbosity": 6,
-    "Level": "DEBUG",
-    "Output": "stderr"
-  },
-  "PostgreSQL": {
-    "Databases": [{
-      "Dbname": "postgres",
-      "Parameters": {
-        "host": "localhost",
-        "port": "5432",
-        "user": "postgres"
-      },
-      "ConnectionPool": {
-        "Policy": "session",
-        "MaxConnIdleTime": "15m",
-        "MaxConnLifetime": "1h",
-        "HealthCheckPeriod": "1m",
-        "MinConns": 0,
-        "MaxConns": 50
-      },
-      "LogStatements": true,
-      "ResetQuery": "DISCARD ALL",
-      "Caches": null
-    }, {
-      "Dbname": "somedatabase",
-      "Parameters": {
-        "host": "localhost",
-        "port": "5432",
-        "user": "postgres"
-      },
-      "ConnectionPool": {
-        "Policy": "statement",
-        "MaxConnIdleTime": "15m",
-        "MaxConnLifetime": "1h",
-        "HealthCheckPeriod": "1m",
-        "MinConns": 0,
-        "MaxConns": 50
-      },
-      "LogStatements": true,
-      "ResetQuery": "DISCARD ALL",
-      "Caches": [{
-        "Schema": "public",
-        "NumEvictionWorkers": null,
-        "MaxIdleDuration": null,
-        "TTLDuration": null,
-        "MaxKeys": null,
-        "MaxInuse": null,
-        "LRUSamples": null,
-        "EvictionPolicy": null,
-        "StorageEngine": null,
-        "CheckEmptyFragmentsInterval": null,
-        "Tables": [{
-          "DMapName": "",
-          "Name": "profile",
-          "MaxIdleDuration": "60m",
-          "TTLDuration": "10m",
-          "MaxKeys": 500000,
-          "MaxInuse": null,
-          "LRUSamples": 20,
-          "EvictionPolicy": "NONE",
-          "StorageEngine": "kvstore"
-        }, {
-          "DMapName": "",
-          "Name": "users",
-          "MaxIdleDuration": "60m",
-          "TTLDuration": "10m",
-          "MaxKeys": 500000,
-          "MaxInuse": null,
-          "LRUSamples": 20,
-          "EvictionPolicy": "NONE",
-          "StorageEngine": "kvstore"
-        }]
-      }, {
-        "Schema": "different-schema",
-        "NumEvictionWorkers": null,
-        "MaxIdleDuration": null,
-        "TTLDuration": null,
-        "MaxKeys": null,
-        "MaxInuse": null,
-        "LRUSamples": null,
-        "EvictionPolicy": null,
-        "StorageEngine": null,
-        "CheckEmptyFragmentsInterval": null,
-        "Tables": [{
-          "DMapName": "",
-          "Name": "users",
-          "MaxIdleDuration": "60s",
-          "TTLDuration": "10s",
-          "MaxKeys": 500000,
-          "MaxInuse": null,
-          "LRUSamples": 20,
-          "EvictionPolicy": "NONE",
-          "StorageEngine": "kvstore"
-        }]
-      }]
-    }]
+  "Olric": {
+    "Name": null,
+    "BindAddr": "0.0.0.0",
+    "BindPort": 3320,
+    "Interface": null,
+    "ReplicationMode": 0,
+    "PartitionCount": 271,
+    "LoadFactor": null,
+    "Serializer": "msgpack",
+    "KeepAlivePeriod": "",
+    "BootstrapTimeout": "5s",
+    "ReplicaCount": 1,
+    "WriteQuorum": 1,
+    "ReadQuorum": 1,
+    "ReadRepair": false,
+    "MemberCountQuorum": 1,
+    "RoutingTablePushInterval": "1m",
+    "Client": {
+      "DialTimeout": "-1s",
+      "ReadTimeout": "3s",
+      "WriteTimeout": "3s",
+      "KeepAlive": "15s",
+      "MinConn": 1,
+      "MaxConn": 100,
+      "PoolTimeout": "3s"
+    },
+    "Logging": {
+      "Verbosity": 6,
+      "Level": "DEBUG",
+      "Output": "stderr"
+    },
+    "Memberlist": {
+      "Environment": "local",
+      "BindAddr": "0.0.0.0",
+      "BindPort": 3322,
+      "Interface": null,
+      "EnableCompression": false,
+      "JoinRetryInterval": "1ms",
+      "MaxJoinAttempts": 1,
+      "Peers": null,
+      "IndirectChecks": null,
+      "RetransmitMult": null,
+      "SuspicionMult": null,
+      "TCPTimeout": null,
+      "PushPullInterval": null,
+      "ProbeTimeout": null,
+      "ProbeInterval": null,
+      "GossipInterval": null,
+      "GossipToTheDeadTime": null,
+      "AdvertiseAddr": null,
+      "AdvertisePort": null,
+      "SuspicionMaxTimeoutMult": null,
+      "DisableTCPPings": null,
+      "AwarenessMaxMultiplier": null,
+      "GossipNodes": null,
+      "GossipVerifyIncoming": null,
+      "GossipVerifyOutgoing": null,
+      "DNSConfigPath": null,
+      "HandoffQueueDepth": null,
+      "UDPBufferSize": null
+    },
+    "StorageEngines": {
+      "Plugins": null,
+      "Engines": null
+    }
   }
 }
