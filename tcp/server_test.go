@@ -31,7 +31,7 @@ func TestTCP_Server(t *testing.T) {
 	port, err := testutils.GetFreePort()
 	require.NoError(t, err)
 
-	cfg := testutils.NewPgScaleConfigYaml(t)
+	cfg := testutils.NewPgScaleConfig(t)
 	c, err := config.New(cfg)
 	require.NoError(t, err)
 

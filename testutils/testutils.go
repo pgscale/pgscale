@@ -131,7 +131,7 @@ func NewCredentialsFile(t *testing.T) (string, error) {
 	return f.Name(), nil
 }
 
-func NewPgScaleConfigYaml(t *testing.T) string {
+func NewPgScaleConfig(t *testing.T) string {
 	data := openFixtureFile("fixtures/pgscale-server.yml")
 	f, err := CreateTmpfile(t, "pgscale-server.*.yml", data)
 	require.NoError(t, err)

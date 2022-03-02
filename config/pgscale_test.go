@@ -9,7 +9,7 @@ import (
 )
 
 func TestConfig(t *testing.T) {
-	filePath := testutils.NewPgScaleConfigYaml(t)
+	filePath := testutils.NewPgScaleConfig(t)
 	c, err := New(filePath)
 	require.NoError(t, err)
 
@@ -23,7 +23,7 @@ func TestConfig(t *testing.T) {
 }
 
 func TestConfig_PgScale_ConnString(t *testing.T) {
-	cfg := testutils.NewPgScaleConfigYaml(t)
+	cfg := testutils.NewPgScaleConfig(t)
 	c, err := New(cfg)
 	require.NoError(t, err)
 
